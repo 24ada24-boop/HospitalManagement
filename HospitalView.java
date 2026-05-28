@@ -4,14 +4,15 @@ class HospitalView {
 
     Scanner sc = new Scanner(System.in);
 
-    void showMenu() {
+    void menu() {
 
         System.out.println("\n--- Hospital Menu ---");
-        System.out.println("1. Display Patients");
-        System.out.println("2. Search Patient");
-        System.out.println("3. Admit Patient");
-        System.out.println("4. Discharge Patient");
-        System.out.println("5. Exit");
+        System.out.println("1. Add Patient");
+        System.out.println("2. Display Patients");
+        System.out.println("3. Search Patient");
+        System.out.println("4. Admit Patient");
+        System.out.println("5. Discharge Patient");
+        System.out.println("6. Exit");
     }
 
     int getChoice() {
@@ -20,27 +21,17 @@ class HospitalView {
         return sc.nextInt();
     }
 
-    String getName(String msg) {
+    int getId() {
+
+        System.out.print("Enter ID: ");
+        return sc.nextInt();
+    }
+
+    String getName() {
 
         sc.nextLine();
-        System.out.print(msg);
+
+        System.out.print("Enter Name: ");
         return sc.nextLine();
-    }
-
-    void displayPatients(Patient[] patients, int count) {
-
-        System.out.println("\nPatients List:");
-
-        for (int i = 0; i < count; i++) {
-
-            System.out.println(
-                    patients[i].id + " - " +
-                    patients[i].name + " - " +
-                    (patients[i].admitted ? "Admitted" : "Discharged"));
-        }
-    }
-
-    void showMessage(String msg) {
-        System.out.println(msg);
     }
 }

@@ -1,64 +1,136 @@
+import java.sql.*;
+
 class HospitalController {
 
-    Patient[] patients;
-    int count;
+    Connection con;
 
-    HospitalController(int size) {
-        patients = new Patient[size];
-        count = 0;
+    HospitalController() {
+
+        con = DBConnection.getConnection();
     }
 
     void addPatient(int id, String name) {
-        patients[count++] = new Patient(id, name);
+
+        try {
+
+            String query =
+                    "INSERT INTO patients VALUES (?, ?, ?)";
+
+            PreparedStatement ps =
+                    con.prepareStatement(query);
+
+            ps.setInt(1, id);
+            ps.setString(2, name);
+            ps.setBoolean(3, false);
+
+            ps.executeUpdate();
+
+            System.out.println("Patient Added");
+
+        } catch (Exception e) {
+
+            System.out.println(e);
+        }
     }
 
-    Patient[] getPatients() {
-        return patients;
-    }
+    void displayPatients() {
 
-    int getCount() {
-        return count;
-    }
+        try {
 
-    Patient findPatient(String name) {
+            Statement st = con.createStatement();
 
-        for (int i = 0; i < count; i++) {
+            ResultSet rs =
+                    st.executeQuery("SELECT * FROM patients");
 
-            if (patients[i].name.equalsIgnoreCase(name)) {
-                return patients[i];
+            System.out.println("\nPatients List:");
+
+            while (rs.next()) {
+
+                System.out.println(
+                        rs.getInt("id") + " - " +
+                        rs.getString("name") + " - " +
+                        (rs.getBoolean("admitted")
+                                ? "Admitted"
+                                : "Discharged"));
             }
-        }
 
-        return null;
+        } catch (Exception e) {
+
+            System.out.println(e);
+        }
     }
 
-    String admitPatient(String name) {
+    boolean searchPatient(String name) {
 
-        Patient p = findPatient(name);
+        try {
 
-        if (p == null)
-            return "Patient Not Found";
+            String query =
+                    "SELECT * FROM patients WHERE name=?";
 
-        if (!p.admitted) {
-            p.admitted = true;
-            return "Patient Admitted Successfully";
+            PreparedStatement ps =
+                    con.prepareStatement(query);
+
+            ps.setString(1, name);
+
+            ResultSet rs = ps.executeQuery();
+
+            return rs.next();
+
+        } catch (Exception e) {
+
+            System.out.println(e);
         }
 
-        return "Patient Already Admitted";
+        return false;
     }
 
-    String dischargePatient(String name) {
+    void admitPatient(String name) {
 
-        Patient p = findPatient(name);
+        try {
 
-        if (p == null)
-            return "Patient Not Found";
+            String query =
+                    "UPDATE patients SET admitted=true WHERE name=?";
 
-        if (p.admitted) {
-            p.admitted = false;
-            return "Patient Discharged Successfully";
+            PreparedStatement ps =
+                    con.prepareStatement(query);
+
+            ps.setString(1, name);
+
+            int rows = ps.executeUpdate();
+
+            if (rows > 0)
+                System.out.println("Patient Admitted");
+            else
+                System.out.println("Patient Not Found");
+
+        } catch (Exception e) {
+
+            System.out.println(e);
         }
+    }
 
-        return "Patient Already Discharged";
+    void dischargePatient(String name) {
+
+        try {
+
+            String query =
+                    "UPDATE patients SET admitted=false WHERE name=?";
+
+            PreparedStatement ps =
+                    con.prepareStatement(query);
+
+            ps.setString(1, name);
+
+            int rows = ps.executeUpdate();
+
+            if (rows > 0)
+                System.out.println("Patient Discharged");
+            else
+                System.out.println("Patient Not Found");
+
+        } catch (Exception e) {
+
+            System.out.println(e);
+        }
     }
 }

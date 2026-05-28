@@ -2,16 +2,15 @@ public class Main {
 
     public static void main(String[] args) {
 
-        HospitalController controller = new HospitalController(10);
-        HospitalView view = new HospitalView();
+        HospitalController controller =
+                new HospitalController();
 
-        controller.addPatient(1, "Arun");
-        controller.addPatient(2, "Kavi");
-        controller.addPatient(3, "Rahul");
+        HospitalView view =
+                new HospitalView();
 
         while (true) {
 
-            view.showMenu();
+            view.menu();
 
             int choice = view.getChoice();
 
@@ -19,42 +18,47 @@ public class Main {
 
                 case 1:
 
-                    view.displayPatients(
-                            controller.getPatients(),
-                            controller.getCount());
+                    int id = view.getId();
+                    String name = view.getName();
+
+                    controller.addPatient(id, name);
 
                     break;
 
                 case 2:
 
-                    String search = view.getName("Enter patient name: ");
-
-                    if (controller.findPatient(search) != null)
-                        view.showMessage("Patient Found");
-                    else
-                        view.showMessage("Patient Not Found");
+                    controller.displayPatients();
 
                     break;
 
                 case 3:
 
-                    String admit = view.getName("Enter patient name: ");
+                    String search = view.getName();
 
-                    view.showMessage(
-                            controller.admitPatient(admit));
+                    if (controller.searchPatient(search))
+                        System.out.println("Patient Found");
+                    else
+                        System.out.println("Patient Not Found");
 
                     break;
 
                 case 4:
 
-                    String discharge = view.getName("Enter patient name: ");
+                    String admit = view.getName();
 
-                    view.showMessage(
-                            controller.dischargePatient(discharge));
+                    controller.admitPatient(admit);
 
                     break;
 
                 case 5:
+
+                    String discharge = view.getName();
+
+                    controller.dischargePatient(discharge);
+
+                    break;
+
+                case 6:
 
                     System.out.println("Exiting...");
                     return;
